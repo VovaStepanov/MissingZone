@@ -26,6 +26,12 @@ const formSchema = z
             .string()
             .min(1, { message: "Password is required" })
             .min(8, { message: "Password is too short" }),
+
+        phoneNumber: z.string().refine((value) => {
+            // Regular expression to validate Ukrainian phone number
+            const ukrainianPhoneNumberRegex = /^(?:\+380|0)(\d{9})$/;
+            return ukrainianPhoneNumberRegex.test(value);
+        }, { message: "Invalid Ukrainian phone number" }),
     })
     .refine((schema) => schema.password === schema.confirmPassword, {
         message: "Passwords should be equal",
@@ -42,6 +48,7 @@ export const RegisterForm = () => {
             email: "",
             password: "",
             confirmPassword: "",
+            phoneNumber: "",
         },
     });
 
@@ -171,6 +178,25 @@ export const RegisterForm = () => {
                             </FormItem>
                         )}
                     />
+
+                    <FormField
+                        control={form.control}
+                        name="phoneNumber"
+                        render={({ field }) => (
+                            <FormItem>
+                                <LabelInputContainer className="mb-8">
+                                    <Label htmlFor="phonenumber">Phone number</Label>
+                                    <Input
+                                        id="phonenumber"
+                                        placeholder="Ex: +380..."
+                                        type="tel"
+                                        {...field}
+                                    />
+                                </LabelInputContainer>
+                            </FormItem>
+                        )}
+                    />
+
 
                     <button
                         className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
