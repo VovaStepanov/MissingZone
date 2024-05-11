@@ -21,7 +21,7 @@ export const Header = () => {
     return (
         <Container
             className={cn("flex justify-between items-center py-2", {
-                "absolute z-10": isHomePage,
+                "absolute z-10 left-1/2 translate-x-[-50%]": isHomePage,
             })}
         >
             <Sheet>
