@@ -11,6 +11,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { ImageUpload } from "@/components/shared/imageUpload";
 import { Switch } from "@/components/ui/switch";
+import { RegisterUser } from "@/services/auth.service";
+import { useRegisterMutation } from "@/mutations/registerMutations";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
     .object({
@@ -71,11 +74,14 @@ const formSchema = z
     );
 
 export const RegisterForm = () => {
+    const router = useRouter();
     const [step, setStep] = useState(1);
 
     const [isVolunteer, setIsVolunteer] = useState(false);
 
     const { toast } = useToast();
+
+    const { mutateAsync: registerUser } = useRegisterMutation();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -92,7 +98,34 @@ export const RegisterForm = () => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {};
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        console.log(values, "asd");
+
+        const userData: RegisterUser = {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            phone: values.phoneNumber,
+            password: values.password,
+            photo: values.uploadedPhoto[0],
+            organizationName: values.volunteerOrganizationName,
+        };
+
+        try {
+            const response = await registerUser(userData);
+            toast({
+                title: "Успіх!",
+                description: "Ви зареєструвались",
+            });
+            router.push("/login");
+        } catch (error) {
+            toast({
+                title: "Помилка реєстрації",
+                description: "Щось пішло не так",
+                variant: "destructive",
+            });
+        }
+    };
 
     useEffect(() => {
         if (!form.formState.isValid && form.formState.submitCount !== 0) {
@@ -311,7 +344,9 @@ export const RegisterForm = () => {
                                             <Switch
                                                 id="is-volunteer"
                                                 checked={value}
-                                                onCheckedChange={(newValue) => {
+                                                onCheckedChange={(
+                                                    newValue: boolean,
+                                                ) => {
                                                     onChange(newValue);
                                                     setIsVolunteer(newValue);
                                                 }}
@@ -356,7 +391,7 @@ export const RegisterForm = () => {
                             <button
                                 className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] mt-3.5"
                                 type="submit"
-                                disabled={form.formState.isValid}
+                                // disabled={form.formState.isValid}
                             >
                                 Зареєструватись!
                                 <BottomGradient />
