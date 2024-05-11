@@ -1,4 +1,5 @@
 import { RegisterForm } from "./_components/RegisterForm";
+import { ImageUpload } from "@/components/shared/imageUpload";
 
 const RegisterPage = () => {
     return (
