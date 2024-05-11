@@ -1,7 +1,14 @@
 "use client";
 import { UploadCloud, X } from "lucide-react";
 import { Card } from "../ui/card";
-import {ChangeEvent, ComponentPropsWithRef, Ref, useEffect, useMemo, useState} from "react";
+import {
+    ChangeEvent,
+    ComponentPropsWithRef,
+    Ref,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
 interface ImageUploadPropsType extends ComponentPropsWithRef<"input"> {
     onFilesChange: (values: string[]) => void;
@@ -57,7 +64,12 @@ async function base64WithMetadataToBlobURL(
     });
 }
 
-export const ImageUpload: React.FC<ImageUploadPropsType> = ({ onFilesChange, filesValue, inputRef, ...rest }) => {
+export const ImageUpload: React.FC<ImageUploadPropsType> = ({
+    onFilesChange,
+    filesValue,
+    inputRef,
+    ...rest
+}) => {
     const [images, setImages] = useState<string[]>([]);
     const [imagesObj, setImagesObj] = useState<string[]>([]);
 
@@ -74,11 +86,11 @@ export const ImageUpload: React.FC<ImageUploadPropsType> = ({ onFilesChange, fil
     };
 
     useEffect(() => {
-        if(images.length === 0) {
+        if (images.length === 0) {
             setImagesObj([]);
         }
         const res: string[] = [];
-        console.log(images,"img")
+        console.log(images, "img");
         images.forEach((image) => {
             base64WithMetadataToBlobURL(image).then((imageObj) => {
                 res.push(imageObj);
