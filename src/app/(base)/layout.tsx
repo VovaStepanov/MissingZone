@@ -1,7 +1,9 @@
 import { Header } from "@/components/shared";
-import { ComponentPropsWithoutRef, FC } from "react";
+import { FC } from "react";
 
-interface ClientLayoutPropsType extends ComponentPropsWithoutRef<"div"> {}
+interface ClientLayoutPropsType {
+    children: React.ReactNode;
+}
 
 const ClientLayout: FC<ClientLayoutPropsType> = ({ children }) => {
     return (

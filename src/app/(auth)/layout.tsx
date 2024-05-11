@@ -1,7 +1,9 @@
 import { AuthHeader } from "@/components/shared/AuthHeader";
-import { ComponentPropsWithoutRef, FC } from "react";
+import { FC } from "react";
 
-interface AuthLayout extends ComponentPropsWithoutRef<"div"> {}
+interface AuthLayout {
+    children: React.ReactNode;
+}
 
 const AuthLayout: FC<AuthLayout> = ({ children }) => {
     return (
