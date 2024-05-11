@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageUpload } from "@/components/shared/imageUpload";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -155,6 +156,22 @@ export const CreateAnnouncementForm = () => {
                                     {...field}
                                 />
                             </LabelInputContainer>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="photos"
+                    render={({ field: { onChange, value, ref, ...rest } }) => (
+                        <FormItem>
+                            <ImageUpload
+                                {...rest}
+                                onFilesChange={(values) => {
+                                    onChange(values);
+                                }}
+                                filesValue={value}
+                                inputRef={ref}
+                            />
                         </FormItem>
                     )}
                 />

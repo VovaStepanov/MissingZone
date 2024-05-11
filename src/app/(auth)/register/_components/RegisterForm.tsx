@@ -37,19 +37,8 @@ const formSchema = z
             },
             { message: "Некоректний український номер" },
         ),
-
         isVolunteer: z.boolean(),
-
         volunteerOrganizationName: z.string(),
-        // .refine((value, schema) => {
-        //     // Check if isVolunteer is true and volunteerOrganizationName is provided
-        //     if (schema.isVolunteer) {
-        //         //return value.trim() !== ''; // Make volunteerOrganizationName required if isVolunteer is true
-        //
-        //     }
-        //     return true; // Otherwise, it's optional
-        // }, { message: "Назва волонтерської організації є обов'язковою для волонтерів" })
-        // .optional(), // Make it optional initially
         uploadedPhoto: z
             .array(z.string())
             .length(1, { message: "Потрібно завантажити одне фото" }),
@@ -311,7 +300,9 @@ export const RegisterForm = () => {
                                             <Switch
                                                 id="is-volunteer"
                                                 checked={value}
-                                                onCheckedChange={(newValue) => {
+                                                onCheckedChange={(
+                                                    newValue: boolean,
+                                                ) => {
                                                     onChange(newValue);
                                                     setIsVolunteer(newValue);
                                                 }}
