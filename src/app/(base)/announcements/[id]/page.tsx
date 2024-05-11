@@ -9,11 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 
-const Map = dynamic(() => import("./_components/Map"), {
-    loading: () => <p>A map is loading</p>,
-    ssr: false,
-});
-
 interface AnnoncementsPagePropsType {
     params: {
         id: string;
@@ -23,8 +18,17 @@ interface AnnoncementsPagePropsType {
 const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
     params: { id },
 }) => {
+    const Map = useMemo(
+        () =>
+            dynamic(() => import("./_components/Map"), {
+                loading: () => <p>A map is loading</p>,
+                ssr: false,
+            }),
+        [],
+    );
+
     return (
-        <Container className="pt-4">
+        <Container className="pt-4 pb-10">
             <div className="flex justify-center gap-16">
                 <AnnouncemetCarousel images={["", "", ""]} />
                 <div className="flex flex-col max-w-[500px]">
@@ -79,7 +83,12 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
                 </div>
             </div>
             <div>
-                <Map />
+                <p className="text-center text-3xl font-bold mt-10">
+                    В останнє замічено в цій локації
+                </p>
+                <div className="w-full mt-6">
+                    <Map />
+                </div>
             </div>
         </Container>
     );
