@@ -12,7 +12,8 @@ import {
 } from "../ui/navigation-menu";
 import { useReadLocalStorage } from "usehooks-ts";
 import { ThemeToggle } from "./ThemeToggle";
-import { cn, useIsHomePage } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { useIsHomePage } from "@/lib/isHomePage";
 
 export const Header = () => {
     const accessToken = useReadLocalStorage("accessToken");
