@@ -64,6 +64,36 @@ class AnnouncementsService {
             throw new Error("Failed receiving comments");
         }
     }
+
+    async createAnnouncement(data: any) {
+        try {
+            const response = api.post("/MissingPost", data);
+
+            return (await response).data;
+        } catch (e) {
+            throw new Error("Failed to create announcement");
+        }
+    }
+
+    async getAllComments() {
+        try {
+            const response = await api.get("/anonim");
+
+            return response.data;
+        } catch (e) {
+            throw new Error("Failed fetching comments");
+        }
+    }
+
+    async verifyComment(id: string) {
+        try {
+            const response = await api.post(`/${id}`);
+
+            return response.data;
+        } catch (e) {
+            throw new Error("Failed to verify comment");
+        }
+    }
 }
 
 export const announcementsService = new AnnouncementsService();

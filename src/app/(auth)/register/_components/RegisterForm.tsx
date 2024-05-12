@@ -40,9 +40,7 @@ const formSchema = z
             },
             { message: "Некоректний український номер" },
         ),
-
         isVolunteer: z.boolean(),
-
         volunteerOrganizationName: z.string(),
 
         uploadedPhoto: z

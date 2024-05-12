@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 export const Header = () => {
     const router = useRouter();
     const accessToken = useReadLocalStorage("accessToken");
+    const role = useReadLocalStorage("role");
     const isHomePage = useIsHomePage();
 
     const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -112,8 +113,22 @@ export const Header = () => {
                             router.push("/login");
                         }}
                     >
-                        Logout
+                        Вийти
                     </Button>
+                )}
+                {role === "admin" && (
+                    <>
+                        <Button asChild>
+                            <Link href="/announcements/create">
+                                Створити оголошення
+                            </Link>
+                        </Button>
+                        <Button asChild>
+                            <Link href="/admin/verifyComments">
+                                Верифікувати коментарі
+                            </Link>
+                        </Button>
+                    </>
                 )}
 
                 <ThemeToggle />
