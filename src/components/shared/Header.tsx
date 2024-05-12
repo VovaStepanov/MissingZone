@@ -14,10 +14,19 @@ import { useReadLocalStorage } from "usehooks-ts";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 import { useIsHomePage } from "@/lib/isHomePage";
+import { useEffect, useState } from "react";
 
 export const Header = () => {
     const accessToken = useReadLocalStorage("accessToken");
     const isHomePage = useIsHomePage();
+
+    const [isMounted, setIsMounted] = useState<boolean>(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) return null;
 
     return (
         <Container
