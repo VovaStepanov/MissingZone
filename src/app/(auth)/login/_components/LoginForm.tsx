@@ -17,12 +17,12 @@ import { useLocalStorage } from "usehooks-ts";
 const formSchema = z.object({
     email: z
         .string()
-        .min(1, { message: "Email is required" })
-        .email({ message: "Email is invalid" }),
+        .min(1, { message: "Вкажіть Email" })
+        .email({ message: "Email некоректний" }),
     password: z
         .string()
-        .min(1, { message: "Password is required" })
-        .min(8, { message: "Password is too short" }),
+        .min(1, { message: "Необхідно ввести пароль" })
+        .min(8, { message: "Введіть довший пароль" }),
 });
 
 export const LoginForm = () => {
@@ -71,7 +71,7 @@ export const LoginForm = () => {
     useEffect(() => {
         if (!form.formState.isValid && form.formState.submitCount !== 0) {
             toast({
-                title: "Failed to sign in",
+                title: "Упс... На жаль,Ви не змогли увійти",
                 description: Object.values(form.formState.errors)[0].message,
                 variant: "destructive",
             });
@@ -86,11 +86,10 @@ export const LoginForm = () => {
     return (
         <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
             <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-                Welcome to Aceternity
+                Вітаємо в MissingZone
             </h2>
-            <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-                Login to aceternity if you can because we don&apos;t have a
-                login flow yet
+            <p className="text-neutral-600 text-base max-w-sm mt-2 dark:text-neutral-300 font-semibold mb-3.5">
+                Увійдіть в свій аккаунт
             </p>
             <Form {...form}>
                 <form className="my-8" onSubmit={form.handleSubmit(onSubmit)}>
@@ -100,10 +99,10 @@ export const LoginForm = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <LabelInputContainer className="mb-4">
-                                    <Label htmlFor="email">Email Address</Label>
+                                    <Label htmlFor="email">Email</Label>
                                     <Input
                                         id="email"
-                                        placeholder="projectmayhem@fc.com"
+                                        placeholder="Oleksandr.Levchenko@gmail"
                                         type="text"
                                         {...field}
                                     />
@@ -117,7 +116,7 @@ export const LoginForm = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <LabelInputContainer className="mb-4">
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label htmlFor="password">Пароль</Label>
                                     <Input
                                         id="password"
                                         placeholder="••••••••"
@@ -134,14 +133,14 @@ export const LoginForm = () => {
                         type="submit"
                         disabled={!form.formState.isValid}
                     >
-                        Sign in &rarr;
+                        Увійти &rarr;
                         <BottomGradient />
                     </button>
                 </form>
             </Form>
             <div className="flex justify-end">
                 <Link href="/register" className="text-blue-400 text-sm">
-                    Create account
+                    Cтворити аккаунт
                 </Link>
             </div>
         </div>

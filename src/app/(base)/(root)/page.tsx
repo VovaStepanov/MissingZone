@@ -2,6 +2,8 @@
 
 import { HeroHighlight, Highlight } from "./_components/HeroHighlight";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -22,13 +24,28 @@ export default function Home() {
                     }}
                     className="text-2xl px-4 md:text-4xl lg:text-5xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto "
                 >
-                    With insomnia, nothing&apos;s real. Everything is far away.
-                    Everything is a{" "}
+
+                    Допоможемо Вам знайти зниклих людей{" "}
                     <Highlight className="text-black dark:text-white">
-                        copy, of a copy, of a copy.
+                        в зоні бойових дій та ТОТ України.
                     </Highlight>
+
                 </motion.h1>
+                <div className="mt-4 flex justify-center">
+                    <Button>
+                        <Link href="/register" className="font-semibold">Розпочати</Link>
+                        <svg className="w-4 h-4 ml-3 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                clip-rule="evenodd" fill-rule="evenodd"></path>
+                        </svg>
+                    </Button>
+                </div>
             </HeroHighlight>
+
+
         </div>
+
     );
+
 }
