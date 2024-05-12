@@ -48,7 +48,12 @@ class AuthService {
         }
         throw new Error("Failed to register");
     }
-    async logout() {}
+    async logout() {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("role");
+        localStorage.removeItem("email");
+        window.location.replace("/login");
+    }
 }
 
 export const authService = new AuthService();

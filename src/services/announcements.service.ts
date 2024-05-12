@@ -11,7 +11,14 @@ export interface AnnouncementsFiltersType {
 }
 
 class AnnouncementsService {
-    async getAnnouncementById(id: string) {}
+    async getAnnouncementById(id: string) {
+        try {
+            const response = await api.get(`/MissingPost/${id}`);
+            return response.data;
+        } catch (e) {
+            throw new Error("Failed to get announcement with this id");
+        }
+    }
 
     async getAnnouncements(filters: AnnouncementsFiltersType) {
         const data = {
@@ -31,6 +38,30 @@ class AnnouncementsService {
             return response.data;
         } catch (e) {
             throw new Error("Failed to get announcements");
+        }
+    }
+
+    async addFeedbackToAnnouncement(id: string, comment: string) {
+        try {
+            const response = await api.post("/Comment", {
+                missingPostId: id,
+                userId: JSON.parse(localStorage.getItem("email") ?? ""),
+                comment,
+            });
+
+            return response.data;
+        } catch (e) {
+            throw new Error("Failed adding comment");
+        }
+    }
+
+    async getAnnouncementUsersComments(id: string) {
+        try {
+            const response = await api.get(`/${id}`);
+
+            return response.data;
+        } catch (e) {
+            throw new Error("Failed receiving comments");
         }
     }
 }

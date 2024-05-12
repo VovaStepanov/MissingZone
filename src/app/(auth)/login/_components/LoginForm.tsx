@@ -29,6 +29,7 @@ export const LoginForm = () => {
     const { toast } = useToast();
     const [, setAccessToken] = useLocalStorage("accessToken", "");
     const [, setRole] = useLocalStorage("role", "");
+    const [, setEmail] = useLocalStorage("email", "");
 
     const router = useRouter();
 
@@ -54,6 +55,7 @@ export const LoginForm = () => {
             const response = await loginUser(userData);
             setAccessToken(response.token);
             setRole(response.role);
+            setEmail(values.email);
             toast({
                 title: "Успіх!",
                 description: "Ви авторизувались",
