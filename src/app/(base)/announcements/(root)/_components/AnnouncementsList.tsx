@@ -24,7 +24,7 @@ export const AnnouncementsList: FC<AnnouncementsListPropsType> = ({
                 <AnouncementCard
                     id={item.missingPostId}
                     image={
-                        item.image ||
+                        item.photos?.[0] ||
                         "https://info.renome.ua/wp-content/uploads/2021/09/placeholder.png"
                     }
                     title={item.title}
