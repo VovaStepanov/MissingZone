@@ -17,14 +17,18 @@ export const AnnouncemetCarousel: FC<AnnoncementsCarouselPropsType> = ({
     images,
 }) => {
     return (
-        <Carousel className="w-full max-w-[500px]">
+        <Carousel className="w-full max-w-[500px] aspect-square">
             <CarouselContent>
                 {images.map((image, index) => (
                     <CarouselItem key={index}>
                         <div className="p-1">
                             <Card>
                                 <CardContent className="flex aspect-square items-center justify-center p-6">
-                                    <p>{index}</p>
+                                    <img
+                                        className="w-full h-full object-cover"
+                                        src={image as string}
+                                        alt="photo"
+                                    />
                                 </CardContent>
                             </Card>
                         </div>

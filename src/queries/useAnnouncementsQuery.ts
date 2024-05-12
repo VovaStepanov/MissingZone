@@ -12,24 +12,23 @@ export interface FetchDataResponse {
 }
 
 export interface Item {
-    id: number;
+    missingPostId: number;
     title: string;
-    image: string;
+    photos: string[] | null;
 }
 
 export const useAnouncementsQuery = (filters: AnnouncementsFiltersType) => {
     return useInfiniteQuery<any>({
         queryKey: ["items", filters],
         queryFn: async ({ pageParam }) => {
+            console.log(pageParam, "asd");
             return announcementsService.getAnnouncements({
                 ...filters,
                 currentPage: pageParam as number,
             });
         },
         getNextPageParam: (lastPage) => {
-            const hasMore =
-                lastPage.totalCount - lastPage.pageSize * lastPage.pageNumber >
-                0;
+            const hasMore = lastPage.pageNumber !== lastPage.totalPages;
 
             return hasMore ? lastPage.pageNumber + 1 : undefined;
         },

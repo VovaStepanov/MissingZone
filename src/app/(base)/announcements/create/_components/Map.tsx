@@ -1,20 +1,27 @@
 "use client";
 
-import { MapContainer, Marker, TileLayer, Popup } from "react-leaflet";
+import {
+    MapContainer,
+    Marker,
+    TileLayer,
+    Popup,
+    useMapEvents,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import { FC } from "react";
-import { LatLngExpression } from "leaflet";
+import { FC, useEffect, useRef, useState } from "react";
+import { LocationMarker } from "./LocationMarker";
+// import { LeafletMouseEvent, Map as MapL } from "leaflet";
 
 interface MapPropsType {
-    location: number[];
+    onClick: (marker: number[]) => void;
 }
 
-const Map: FC<MapPropsType> = ({ location }) => {
+const Map: FC<MapPropsType> = ({ onClick }) => {
     return (
         <MapContainer
-            center={location as LatLngExpression}
+            center={[51.505, -0.09]}
             zoom={13}
             scrollWheelZoom={false}
             className="w-full aspect-[3/1]"
@@ -23,11 +30,7 @@ const Map: FC<MapPropsType> = ({ location }) => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={location as LatLngExpression}>
-                <Popup>
-                    A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-            </Marker>
+            <LocationMarker onClick={onClick} />
         </MapContainer>
     );
 };
