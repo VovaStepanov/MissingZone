@@ -21,7 +21,7 @@ class AnnouncementsService {
             BirthDate: filters.birthDate,
             City: filters.city,
             PageNumber: filters.currentPage,
-            pageSize: 9,
+            pageSize: 24,
         };
 
         try {

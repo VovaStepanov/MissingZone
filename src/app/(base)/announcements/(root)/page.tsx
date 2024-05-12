@@ -92,7 +92,7 @@ const AnnoncementsPage = () => {
     }, [hasNextPage, fetchNextPage]);
 
     console.log(data);
-
+    
     return (
         <div>
             <Container className="flex gap-4 py-4">
