@@ -14,7 +14,7 @@ export interface FetchDataResponse {
 export interface Item {
     missingPostId: number;
     title: string;
-    image: string;
+    photos: string[] | null;
 }
 
 export const useAnouncementsQuery = (filters: AnnouncementsFiltersType) => {

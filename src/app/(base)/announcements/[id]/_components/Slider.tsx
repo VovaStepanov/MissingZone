@@ -24,7 +24,11 @@ export const AnnouncemetCarousel: FC<AnnoncementsCarouselPropsType> = ({
                         <div className="p-1">
                             <Card>
                                 <CardContent className="flex aspect-square items-center justify-center p-6">
-                                    <p>{index}</p>
+                                    <img
+                                        className="w-full h-full object-cover"
+                                        src={image as string}
+                                        alt="photo"
+                                    />
                                 </CardContent>
                             </Card>
                         </div>

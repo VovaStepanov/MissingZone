@@ -69,9 +69,11 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
         data?.photos?.forEach(async (image: string) => {
             const imageUrl = await base64WithMetadataToBlobURL(image);
             res.push(imageUrl);
+            setImages(res);
         });
-        setImages(res);
     }, [data?.photos]);
+
+    console.log(comments);
 
     return (
         <Container className="pt-4 pb-10">
@@ -151,6 +153,25 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
                     <p className="text-center text-3xl font-bold mt-10">
                         Відгуки волонтерів
                     </p>
+                    <div className="flex flex-col gap-2 mt-4">
+                        {comments?.map((comment: any) => (
+                            <>
+                                <p>
+                                    {comment.firstName} {comment.lastName}
+                                </p>
+                                <Card
+                                    className="w-full px-3 py-3"
+                                    key={comment.commnetId}
+                                >
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: comment.comment,
+                                        }}
+                                    ></div>
+                                </Card>
+                            </>
+                        ))}
+                    </div>
                 </div>
             )}
         </Container>
