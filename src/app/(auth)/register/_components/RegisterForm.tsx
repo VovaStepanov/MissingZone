@@ -11,6 +11,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { ImageUpload } from "@/components/shared/imageUpload";
 import { Switch } from "@/components/ui/switch";
+import { RegisterUser } from "@/services/auth.service";
+import { useRegisterMutation } from "@/mutations/registerMutations";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
     .object({
@@ -37,19 +40,9 @@ const formSchema = z
             },
             { message: "Некоректний український номер" },
         ),
-
         isVolunteer: z.boolean(),
-
         volunteerOrganizationName: z.string(),
-        // .refine((value, schema) => {
-        //     // Check if isVolunteer is true and volunteerOrganizationName is provided
-        //     if (schema.isVolunteer) {
-        //         //return value.trim() !== ''; // Make volunteerOrganizationName required if isVolunteer is true
-        //
-        //     }
-        //     return true; // Otherwise, it's optional
-        // }, { message: "Назва волонтерської організації є обов'язковою для волонтерів" })
-        // .optional(), // Make it optional initially
+
         uploadedPhoto: z
             .array(z.string())
             .length(1, { message: "Потрібно завантажити одне фото" }),
@@ -71,11 +64,14 @@ const formSchema = z
     );
 
 export const RegisterForm = () => {
+    const router = useRouter();
     const [step, setStep] = useState(1);
 
     const [isVolunteer, setIsVolunteer] = useState(false);
 
     const { toast } = useToast();
+
+    const { mutateAsync: registerUser } = useRegisterMutation();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -92,7 +88,34 @@ export const RegisterForm = () => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {};
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        console.log(values, "asd");
+
+        const userData: RegisterUser = {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            phone: values.phoneNumber,
+            password: values.password,
+            photo: values.uploadedPhoto[0],
+            organizationName: values.volunteerOrganizationName,
+        };
+
+        try {
+            const response = await registerUser(userData);
+            toast({
+                title: "Успіх!",
+                description: "Ви зареєструвались",
+            });
+            router.push("/login");
+        } catch (error) {
+            toast({
+                title: "Помилка реєстрації",
+                description: "Щось пішло не так",
+                variant: "destructive",
+            });
+        }
+    };
 
     useEffect(() => {
         if (!form.formState.isValid && form.formState.submitCount !== 0) {
@@ -189,7 +212,7 @@ export const RegisterForm = () => {
                                             <Label htmlFor="email">Email</Label>
                                             <Input
                                                 id="email"
-                                                placeholder="Oleksandr.Levchenko@gmail.com. "
+                                                placeholder="Oleksandr.Levchenko@gmail"
                                                 type="text"
                                                 {...field}
                                             />
@@ -306,7 +329,9 @@ export const RegisterForm = () => {
                                             <Switch
                                                 id="is-volunteer"
                                                 checked={value}
-                                                onCheckedChange={(newValue) => {
+                                                onCheckedChange={(
+                                                    newValue: boolean,
+                                                ) => {
                                                     onChange(newValue);
                                                     setIsVolunteer(newValue);
                                                 }}

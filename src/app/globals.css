@@ -83,3 +83,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute;
     right: 12px;
 }
+
+table,
+th,
+td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
