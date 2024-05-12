@@ -2,12 +2,15 @@
 
 import { Container } from "@/components/shared/Container";
 
-import { FC, useMemo } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { AnnouncemetCarousel } from "./_components/Slider";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { useAnouncementQuery } from "@/queries/useAnnouncementQuery";
+import Link from "next/link";
+import { useAnouncementCommentsQuery } from "@/queries/useAnnouncementCommentsQuery";
 
 interface AnnoncementsPagePropsType {
     params: {
@@ -15,9 +18,40 @@ interface AnnoncementsPagePropsType {
     };
 }
 
+async function base64WithMetadataToBlobURL(
+    base64WithMetadata: string,
+): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        // Convert base64 string to binary data
+        const binaryString = atob(base64WithMetadata.split(",")[1]);
+        const binaryData = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            binaryData[i] = binaryString.charCodeAt(i);
+        }
+
+        // Create Blob from binary data
+        const mimeType = base64WithMetadata.match(/^data:([^;]+);/)?.[1];
+        if (!mimeType) {
+            reject(new Error("Failed to determine mime type"));
+            return;
+        }
+        const blob = new Blob([binaryData.buffer], { type: mimeType });
+
+        // Create File from Blob
+        const fileName = "image"; // Set a default file name
+        const file = new File([blob], fileName, { type: mimeType });
+
+        // Create URL from File
+        const fileURL = URL.createObjectURL(file);
+        resolve(fileURL);
+    });
+}
+
 const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
     params: { id },
 }) => {
+    const [images, setImages] = useState<string[]>([]);
+
     const Map = useMemo(
         () =>
             dynamic(() => import("./_components/Map"), {
@@ -27,26 +61,32 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
         [],
     );
 
+    const { data } = useAnouncementQuery(id);
+    const { data: comments } = useAnouncementCommentsQuery(id);
+    console.log(comments, "ad");
+
+    useEffect(() => {
+        const res: string[] = [];
+        data?.photos?.forEach(async (image: string) => {
+            const imageUrl = await base64WithMetadataToBlobURL(image);
+            res.push(imageUrl);
+        });
+        setImages(res);
+    }, [data?.photos]);
+
     return (
         <Container className="pt-4 pb-10">
-            <div className="flex justify-center gap-16">
-                <AnnouncemetCarousel images={["", "", ""]} />
-                <div className="flex flex-col max-w-[500px]">
+            <div className="flex justify-center items-center flex-col lg:flex-row gap-16">
+                {images.length !== 0 && <AnnouncemetCarousel images={images} />}
+                {images.length === 0 && (
+                    <Card className="w-[80%] lg:w-full lg:max-w-[500px] aspect-square flex items-center justify-center">
+                        <p>Для цього оголошення немає фото</p>
+                    </Card>
+                )}
+                <div className="flex flex-col w-[80%] lg:max-w-[500px]">
                     <div className="flex-1">
-                        <p className="text-3xl font-bold">
-                            Розшукується John Doe John
-                        </p>
-                        <p className="mt-4">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Deserunt, error? Quia in, repudiandae hic nam
-                            non eligendi sequi vel cum quo rem eos commodi
-                            nostrum ratione unde reiciendis earum architecto.
-                            Ipsum eos voluptatem accusamus ullam eum amet
-                            mollitia ad quis molestias accusantium,
-                            reprehenderit nesciunt! Ullam blanditiis explicabo
-                            id! Soluta dicta amet tempora sequi possimus dolores
-                            fuga illum repellat beatae qui!
-                        </p>
+                        <p className="text-3xl font-bold">{data?.title}</p>
+                        <p className="mt-4">{data?.description}</p>
                     </div>
                     {/* <div className="mt-4">
                         <p className="font-bold">
@@ -76,9 +116,15 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
                             </div>
                         </div>
                     </div> */}
-                    <div className="flex gap-2 mt-4">
-                        <Button>Відгукнутись</Button>
-                        <Button variant="outline">Telegram</Button>
+                    <div className="flex gap-2 mt-4 justify-center lg:justify-start">
+                        <Button asChild>
+                            <Link href={`/announcements/${id}/feedback`}>
+                                Відгукнутись
+                            </Link>
+                        </Button>
+                        <Button variant="outline" asChild>
+                            <Link href={data?.contactInfo ?? ""}>Telegram</Link>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -87,9 +133,16 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
                     В останнє замічено в цій локації
                 </p>
                 <div className="w-full mt-6">
-                    <Map />
+                    <Map location={data?.location ?? [50, 50]} />
                 </div>
             </div>
+            {comments?.length > 0 && (
+                <div>
+                    <p className="text-center text-3xl font-bold mt-10">
+                        Відгуки волонтерів
+                    </p>
+                </div>
+            )}
         </Container>
     );
 };

@@ -9,20 +9,31 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import Link from "next/link";
+import { LoginUser } from "@/services/auth.service";
+import { useLoginMutation } from "@/mutations/loginMutation";
+import { useRouter } from "next/navigation";
+import { useLocalStorage } from "usehooks-ts";
 
 const formSchema = z.object({
     email: z
         .string()
-        .min(1, { message: "Email is required" })
-        .email({ message: "Email is invalid" }),
+        .min(1, { message: "Вкажіть Email" })
+        .email({ message: "Email некоректний" }),
     password: z
         .string()
-        .min(1, { message: "Password is required" })
-        .min(8, { message: "Password is too short" }),
+        .min(1, { message: "Необхідно ввести пароль" })
+        .min(8, { message: "Введіть довший пароль" }),
 });
 
 export const LoginForm = () => {
     const { toast } = useToast();
+    const [, setAccessToken] = useLocalStorage("accessToken", "");
+    const [, setRole] = useLocalStorage("role", "");
+    const [, setEmail] = useLocalStorage("email", "");
+
+    const router = useRouter();
+
+    const { mutateAsync: loginUser } = useLoginMutation();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -32,16 +43,37 @@ export const LoginForm = () => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log(values);
+
+        const userData: LoginUser = {
+            email: values.email,
+            password: values.password,
+        };
+
+        try {
+            const response = await loginUser(userData);
+            setAccessToken(response.token);
+            setRole(response.role);
+            setEmail(values.email);
+            toast({
+                title: "Успіх!",
+                description: "Ви авторизувались",
+            });
+            router.push("/announcements");
+        } catch (e) {
+            toast({
+                title: "Помилка авторизації",
+                description: "Щось пішло не так",
+                variant: "destructive",
+            });
+        }
     };
 
     useEffect(() => {
         if (!form.formState.isValid && form.formState.submitCount !== 0) {
             toast({
-                title: "Failed to sign in",
+                title: "Упс... На жаль,Ви не змогли увійти",
                 description: Object.values(form.formState.errors)[0].message,
                 variant: "destructive",
             });
@@ -56,11 +88,10 @@ export const LoginForm = () => {
     return (
         <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
             <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-                Welcome to Aceternity
+                Вітаємо в MissingZone
             </h2>
-            <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-                Login to aceternity if you can because we don&apos;t have a
-                login flow yet
+            <p className="text-neutral-600 text-base max-w-sm mt-2 dark:text-neutral-300 font-semibold mb-3.5">
+                Увійдіть в свій аккаунт
             </p>
             <Form {...form}>
                 <form className="my-8" onSubmit={form.handleSubmit(onSubmit)}>
@@ -70,10 +101,10 @@ export const LoginForm = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <LabelInputContainer className="mb-4">
-                                    <Label htmlFor="email">Email Address</Label>
+                                    <Label htmlFor="email">Email</Label>
                                     <Input
                                         id="email"
-                                        placeholder="projectmayhem@fc.com"
+                                        placeholder="Oleksandr.Levchenko@gmail"
                                         type="text"
                                         {...field}
                                     />
@@ -87,7 +118,7 @@ export const LoginForm = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <LabelInputContainer className="mb-4">
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label htmlFor="password">Пароль</Label>
                                     <Input
                                         id="password"
                                         placeholder="••••••••"
@@ -102,16 +133,16 @@ export const LoginForm = () => {
                     <button
                         className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                         type="submit"
-                        disabled={form.formState.isValid}
+                        disabled={!form.formState.isValid}
                     >
-                        Sign in &rarr;
+                        Увійти &rarr;
                         <BottomGradient />
                     </button>
                 </form>
             </Form>
             <div className="flex justify-end">
                 <Link href="/register" className="text-blue-400 text-sm">
-                    Create account
+                    Cтворити аккаунт
                 </Link>
             </div>
         </div>
