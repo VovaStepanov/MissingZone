@@ -15,6 +15,7 @@ export interface Item {
     missingPostId: number;
     title: string;
     photos: string[] | null;
+    prePhoto: string | null;
 }
 
 export const useAnouncementsQuery = (filters: AnnouncementsFiltersType) => {
