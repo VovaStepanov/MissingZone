@@ -20,15 +20,15 @@ export const AnnouncementsList: FC<AnnouncementsListPropsType> = ({
             )}
             {...rest}
         >
-            {items.map((item) => (
+            {items?.map((item) => (
                 <AnouncementCard
-                    id={item.id}
+                    id={item.missingPostId}
                     image={
                         item.image ||
                         "https://info.renome.ua/wp-content/uploads/2021/09/placeholder.png"
                     }
                     title={item.title}
-                    key={item.id}
+                    key={item.missingPostId}
                 />
             ))}
         </div>

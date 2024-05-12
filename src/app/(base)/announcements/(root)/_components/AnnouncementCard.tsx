@@ -32,7 +32,7 @@ export const AnouncementCard: React.FC<AnouncementCardPropsType> = ({
                     </h3>
                 </div>
                 <Button size="sm" className="text-xs sm:text-base" asChild>
-                    <Link href={`anouncements/${id}`}>Переглянути</Link>
+                    <Link href={`announcements/${id}`}>Переглянути</Link>
                 </Button>
             </div>
         </Card>

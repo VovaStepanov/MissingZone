@@ -70,9 +70,9 @@ export const Filters: FC<FiltersPropsType> = ({
                 }
                 className="justify-between"
             />
-            <Button className="w-full" onClick={onSubmit}>
+            {/* <Button className="w-full" onClick={onSubmit}>
                 Знайти
-            </Button>
+            </Button> */}
         </div>
     );
 };
