@@ -17,7 +17,7 @@ export const AnnouncemetCarousel: FC<AnnoncementsCarouselPropsType> = ({
     images,
 }) => {
     return (
-        <Carousel className="w-full max-w-[500px]">
+        <Carousel className="w-full max-w-[500px] aspect-square">
             <CarouselContent>
                 {images.map((image, index) => (
                     <CarouselItem key={index}>

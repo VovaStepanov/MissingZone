@@ -15,8 +15,11 @@ import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 import { useIsHomePage } from "@/lib/isHomePage";
 import { useEffect, useState } from "react";
+import { authService } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
 
 export const Header = () => {
+    const router = useRouter();
     const accessToken = useReadLocalStorage("accessToken");
     const isHomePage = useIsHomePage();
 
@@ -103,8 +106,13 @@ export const Header = () => {
                     </>
                 )}
                 {!!accessToken && (
-                    <Button asChild>
-                        <Link href="/logout">Вийти</Link>
+                    <Button
+                        onClick={() => {
+                            authService.logout();
+                            router.push("/login");
+                        }}
+                    >
+                        Logout
                     </Button>
                 )}
 

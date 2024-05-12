@@ -32,13 +32,14 @@ export const Filters: FC<FiltersPropsType> = ({
     onSubmit,
 }) => {
     return (
-        <div className="flex gap-3 flex-col max-w-[250px]">
+        <div className="flex gap-3 flex-row flex-wrap lg:flex-nowrap lg:flex-col lg:max-w-[250px]">
             <Input
                 placeholder="Прізвище"
                 value={firstName}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setFirstName(e.target.value)
                 }
+                className="w-[48%] lg:w-full"
             />
             <Input
                 placeholder="Ім'я"
@@ -46,6 +47,7 @@ export const Filters: FC<FiltersPropsType> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setLastName(e.target.value)
                 }
+                className="w-[48%] lg:w-full"
             />
             <Input
                 placeholder="По батькові"
@@ -53,6 +55,7 @@ export const Filters: FC<FiltersPropsType> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setSurname(e.target.value)
                 }
+                className="w-[48%] lg:w-full"
             />
             <Input
                 placeholder="Місто"
@@ -60,6 +63,7 @@ export const Filters: FC<FiltersPropsType> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setCity(e.target.value)
                 }
+                className="w-[48%] lg:w-full"
             />
             <Input
                 placeholder="Дата народження"
@@ -68,7 +72,7 @@ export const Filters: FC<FiltersPropsType> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setBirthDate(e.target.value)
                 }
-                className="justify-between"
+                className="justify-between w-[48%] lg:w-full"
             />
             {/* <Button className="w-full" onClick={onSubmit}>
                 Знайти

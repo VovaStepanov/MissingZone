@@ -92,10 +92,10 @@ const AnnoncementsPage = () => {
     }, [hasNextPage, fetchNextPage]);
 
     console.log(data);
-    
+
     return (
         <div>
-            <Container className="flex gap-4 py-4">
+            <Container className="flex flex-col lg:flex-row gap-4 py-4">
                 <Filters
                     firstName={firstName}
                     lastName={lastName}
