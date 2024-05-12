@@ -72,7 +72,11 @@ export const Header = () => {
                     </div>
                 </SheetContent>
             </Sheet>
-            <Link href="/" className="mr-6 hidden lg:flex">
+            <Link
+                href="/"
+                className="mr-6 hidden lg:flex items-center gap-2 text-xs font-bold"
+            >
+                MissingZone
                 <Heart />
             </Link>
             <NavigationMenu className="hidden lg:flex">
