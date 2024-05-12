@@ -44,15 +44,7 @@ const formSchema = z
         isVolunteer: z.boolean(),
 
         volunteerOrganizationName: z.string(),
-        // .refine((value, schema) => {
-        //     // Check if isVolunteer is true and volunteerOrganizationName is provided
-        //     if (schema.isVolunteer) {
-        //         //return value.trim() !== ''; // Make volunteerOrganizationName required if isVolunteer is true
-        //
-        //     }
-        //     return true; // Otherwise, it's optional
-        // }, { message: "Назва волонтерської організації є обов'язковою для волонтерів" })
-        // .optional(), // Make it optional initially
+
         uploadedPhoto: z
             .array(z.string())
             .length(1, { message: "Потрібно завантажити одне фото" }),
@@ -222,7 +214,7 @@ export const RegisterForm = () => {
                                             <Label htmlFor="email">Email</Label>
                                             <Input
                                                 id="email"
-                                                placeholder="Oleksandr.Levchenko@gmail.com. "
+                                                placeholder="Oleksandr.Levchenko@gmail"
                                                 type="text"
                                                 {...field}
                                             />
