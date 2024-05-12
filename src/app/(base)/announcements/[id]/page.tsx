@@ -63,7 +63,6 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
 
     const { data } = useAnouncementQuery(id);
     const { data: comments } = useAnouncementCommentsQuery(id);
-    console.log(comments, "ad");
 
     useEffect(() => {
         const res: string[] = [];
@@ -86,7 +85,12 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
                 <div className="flex flex-col w-[80%] lg:max-w-[500px]">
                     <div className="flex-1">
                         <p className="text-3xl font-bold">{data?.title}</p>
-                        <p className="mt-4">{data?.description}</p>
+                        <div
+                            className="mt-4"
+                            dangerouslySetInnerHTML={{
+                                __html: data?.description,
+                            }}
+                        ></div>
                     </div>
                     {/* <div className="mt-4">
                         <p className="font-bold">
@@ -133,7 +137,13 @@ const AnnouncementPage: FC<AnnoncementsPagePropsType> = ({
                     В останнє замічено в цій локації
                 </p>
                 <div className="w-full mt-6">
-                    <Map location={data?.location ?? [50, 50]} />
+                    <Map
+                        location={
+                            data?.location
+                                ? JSON.parse(`[${data?.coordinates}]`)
+                                : [50, 50]
+                        }
+                    />
                 </div>
             </div>
             {comments?.length > 0 && (

@@ -13,8 +13,9 @@ api.interceptors.request.use(
             !config.url.includes("/registration")
         ) {
             // Add Authorization header
-            config.headers["Authorization"] =
-                localStorage.getItem("accessToken");
+            config.headers["Authorization"] = JSON.parse(
+                localStorage.getItem("accessToken") ?? "",
+            );
         }
         return config;
     },

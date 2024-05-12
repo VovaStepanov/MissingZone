@@ -12,21 +12,32 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import "react-quill/dist/quill.snow.css";
+import { useCreateAnnouncementMutation } from "@/mutations/createAnnouncementMutation";
+import { useRouter } from "next/navigation";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+    ssr: false,
+});
 
 const formSchema = z.object({
+    title: z.string().min(1, { message: "Заголовок є обов'язковим" }),
     firstName: z.string().min(1, { message: "Ім'я є обов'язковим" }),
     lastName: z.string().min(1, { message: "Прізвище є обов'язковим" }),
     fatherName: z.string().min(1, { message: "По батькові є обов'язковим" }),
     city: z.string().min(1, { message: "Місто є обов'язковим" }),
     birthDate: z.string().min(1, { message: "Дата народження є обов'язковою" }),
+    description: z.string().min(1, { message: "Опис людини є обовзяковим" }),
     photos: z.array(z.string()),
     location: z
         .array(z.number())
         .length(2, { message: "Локація є обовязковою" }),
+    contactInfo: z.string().min(1, { message: "Посилання є обовзяковим" }),
 });
 
 export const CreateAnnouncementForm = () => {
     const { toast } = useToast();
+    const router = useRouter();
 
     const Map = useMemo(
         () =>
@@ -40,6 +51,7 @@ export const CreateAnnouncementForm = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            title: "",
             firstName: "",
             lastName: "",
             fatherName: "",
@@ -47,13 +59,48 @@ export const CreateAnnouncementForm = () => {
             birthDate: "",
             photos: [],
             location: [],
+            contactInfo: "",
+            description: "",
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values);
+    const { mutateAsync: createAnnouncement } = useCreateAnnouncementMutation();
+
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        try {
+            const dateParts = values.birthDate.split("-");
+
+            // Assuming the string is in the format yyyy-mm-dd
+            const year = parseInt(dateParts[0], 10);
+            const month = parseInt(dateParts[1], 10) - 1; // Month is 0-indexed in JavaScript Date objects
+            const day = parseInt(dateParts[2], 10);
+
+            // Creating a new Date object
+            const date = new Date(year, month, day);
+            await createAnnouncement({
+                title: values.title,
+                description: values.description,
+                contents: values.photos,
+                coordinates: values.location,
+                contactInfo: values.contactInfo,
+                userId: JSON.parse(localStorage.getItem("email") ?? ""),
+                firstName: values.firstName,
+                lastName: values.lastName,
+                fatherName: values.fatherName,
+                birthDate: date,
+                city: values.city,
+            });
+            toast({
+                title: "Успіх",
+                description: "Оголошення успішно створене",
+            });
+            router.replace("/announcements");
+        } catch (e) {
+            toast({
+                title: "Помилка",
+                description: "Спробуйте пізніше",
+            });
+        }
     };
 
     useEffect(() => {
@@ -74,6 +121,23 @@ export const CreateAnnouncementForm = () => {
     return (
         <Form {...form}>
             <form className="mt-4" onSubmit={form.handleSubmit(onSubmit)}>
+                <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                        <FormItem>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="title">Заголовок</Label>
+                                <Input
+                                    id="title"
+                                    placeholder="Введіть заголовок"
+                                    type="text"
+                                    {...field}
+                                />
+                            </LabelInputContainer>
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="firstName"
@@ -144,10 +208,46 @@ export const CreateAnnouncementForm = () => {
                 />
                 <FormField
                     control={form.control}
-                    name="birthDate"
+                    name="contactInfo"
                     render={({ field }) => (
                         <FormItem>
                             <LabelInputContainer className="mb-4">
+                                <Label htmlFor="contactInfo">
+                                    Посилання на тегеграм групу
+                                </Label>
+                                <Input
+                                    id="contactInfo"
+                                    placeholder="Введіть посилання"
+                                    type="text"
+                                    {...field}
+                                />
+                            </LabelInputContainer>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                        <FormItem>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="description">Опис людини</Label>
+                                <ReactQuill
+                                    id="description"
+                                    className="h-[300px]"
+                                    theme="snow"
+                                    {...field}
+                                />
+                            </LabelInputContainer>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="birthDate"
+                    render={({ field }) => (
+                        <FormItem>
+                            <LabelInputContainer className="mb-4 mt-14">
                                 <Label htmlFor="city">Дата народження</Label>
                                 <Input
                                     id="birthDate"
