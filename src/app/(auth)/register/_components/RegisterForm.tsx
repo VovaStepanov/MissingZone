@@ -32,14 +32,9 @@ const formSchema = z
             .min(1, { message: "Необхідно ввести пароль" })
             .min(8, { message: "Введіть довший пароль" }),
 
-        phoneNumber: z.string().refine(
-            (value) => {
-                // Regular expression to validate Ukrainian phone number
-                const ukrainianPhoneNumberRegex = /^(?:\+380|0)(\d{9})$/;
-                return ukrainianPhoneNumberRegex.test(value);
-            },
-            { message: "Некоректний український номер" },
-        ),
+        phoneNumber: z
+            .string()
+            .min(1, { message: "Некоректний український номер" }),
         isVolunteer: z.boolean(),
         volunteerOrganizationName: z.string(),
 
